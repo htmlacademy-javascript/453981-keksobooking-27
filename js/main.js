@@ -1,9 +1,24 @@
-function getRandom(min, max, decimals) {
-  const multiplier = 10 ** (decimals || 0);
-  const scaleMin = min * multiplier;
-  const scaleMax = max * multiplier;
+function getRandom(min, max) {
+  if (min < 0 || max < 0) {
+    return NaN;
+  }
 
-  return Math.round(Math.random() * (scaleMax - scaleMin) + scaleMin) / multiplier;
+  const minNumber = Math.min(min, max);
+  const maxNumber = Math.max(min, max);
+
+  return Math.round(Math.random() * (maxNumber - minNumber) + minNumber);
 }
 
-getRandom(1, 150, 1);
+function getRandomWithPrecision(min, max, precision = 0) {
+  if (min < 0 || max < 0) {
+    return NaN;
+  }
+
+  const minNumber = Math.min(min, max);
+  const maxNumber = Math.max(min, max);
+
+  return Number((Math.random() * (maxNumber - minNumber) + minNumber).toFixed(precision));
+}
+
+getRandom(1, 150);
+getRandomWithPrecision(1, 150, 3);
