@@ -1,3 +1,26 @@
+const OFFERS_COUNT = 10;
+const OFFER_TYPES = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
+const OFFER_CHECKIN = ['12:00', '13:00', '14:00'];
+const OFFER_CHECKOUT = ['12:00', '13:00', '14:00'];
+const FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+const PHOTOS = [
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
+];
+const AUTHORS_MAX_COUNT = 10;
+const MIN_PRICE = 100;
+const MAX_PRICE = 100000;
+const MIN_ROOMS = 1;
+const MAX_ROOMS = 6;
+const MIN_GUESTS = 1;
+const MAX_GUESTS = 10;
+const LAT_MIN = 35.65000;
+const LAT_MAX = 35.70000;
+const LNG_MIN = 139.70000;
+const LNG_MAX = 139.80000;
+const LOCATION_PRECISION = 5;
+
 function getRandom(min, max) {
   if (min < 0 || max < 0) {
     return NaN;
@@ -21,25 +44,16 @@ function getRandomWithPrecision(min, max, precision = 0) {
 }
 
 const userIds = [];
-const offerTypes = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
-const offerCheckin = ['12:00', '13:00', '14:00'];
-const offerCheckout = ['12:00', '13:00', '14:00'];
-const features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-const photos = [
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
-];
 
 function buildAuthor() {
   let userId;
 
-  if (userIds.length === 10) {
+  if (userIds.length === AUTHORS_MAX_COUNT) {
     throw new Error('Cannot create more authors');
   }
 
   while (!userId || userIds.includes(userId)) {
-    const randomNumber = getRandom(1, 10);
+    const randomNumber = getRandom(1, AUTHORS_MAX_COUNT);
 
     if (randomNumber < 10) {
       userId = `0${randomNumber}`;
@@ -53,80 +67,62 @@ function buildAuthor() {
   return {avatar: `img/avatars/user${userId}.png`};
 }
 
-function getFeatures(count) {
-  if (isNaN(count) || count < 1 || count > features.length) {
+function getRandomItems(count, itemsArray) {
+  if (isNaN(count) || count < 1 || count > itemsArray.length) {
     return [];
   }
 
-  const usedFeatures = [];
-  let feature;
+  const usedItems = [];
+  let item;
 
-  while (usedFeatures.length < count) {
-    if (!feature || usedFeatures.includes(feature)) {
-      feature = features[getRandom(0, features.length - 1)];
+  while (usedItems.length < count) {
+    if (!item || usedItems.includes(item)) {
+      item = itemsArray[getRandom(0, itemsArray.length - 1)];
     } else {
-      usedFeatures.push(feature);
+      usedItems.push(item);
     }
   }
 
-  return usedFeatures;
+  return usedItems;
 }
 
-
-function getPhotos(count) {
-  if (isNaN(count) || count < 1 || count > photos.length) {
-    return [];
-  }
-
-  const usedPhotos = [];
-  let photo;
-
-  while (usedPhotos.length < count) {
-    if (!photo || usedPhotos.includes(photo)) {
-      photo = photos[getRandom(0, photos.length - 1)];
-    } else {
-      usedPhotos.push(photo);
-    }
-  }
-
-  return usedPhotos;
-}
-
-function buildOffer() {
+function buildOffer(location) {
   return {
     title: 'Сдам жильё в аренду',
-    address: `${getRandomWithPrecision(35.65000, 35.70000, 5)}, ${getRandomWithPrecision(139.70000, 139.80000, 5)}`,
-    price: getRandom(100, 100000),
-    type: offerTypes[getRandom(0, offerTypes.length - 1)],
-    rooms: getRandom(1, 6),
-    guests: getRandom(1, 10),
-    checkin: offerCheckin[getRandom(0, offerCheckin.length - 1)],
-    checkout: offerCheckout[getRandom(0, offerCheckout.length - 1)],
-    features: getFeatures(getRandom(0, features.length)),
+    address: `${location.lat}, ${location.lng}`,
+    price: getRandom(MIN_PRICE, MAX_PRICE),
+    type: OFFER_TYPES[getRandom(0, OFFER_TYPES.length - 1)],
+    rooms: getRandom(MIN_ROOMS, MAX_ROOMS),
+    guests: getRandom(MIN_GUESTS, MAX_GUESTS),
+    checkin: OFFER_CHECKIN[getRandom(0, OFFER_CHECKIN.length - 1)],
+    checkout: OFFER_CHECKOUT[getRandom(0, OFFER_CHECKOUT.length - 1)],
+    features: getRandomItems(getRandom(0, FEATURES.length), FEATURES),
     description: 'Уютное жильё для любителей спокойного отдыха',
-    photos: getPhotos(getRandom(0, photos.length)),
+    photos: getRandomItems(getRandom(0, PHOTOS.length), PHOTOS),
   };
 }
 
 function buildLocation() {
   return {
-    lat: getRandomWithPrecision(35.65000, 35.70000, 5),
-    lng: getRandomWithPrecision(139.70000, 139.80000, 5),
+    lat: getRandomWithPrecision(LAT_MIN, LAT_MAX, LOCATION_PRECISION),
+    lng: getRandomWithPrecision(LNG_MIN, LNG_MAX, LOCATION_PRECISION),
   };
 }
 
 function buildBookingOffer() {
+  const location = buildLocation();
+
   return {
     author: buildAuthor(),
-    offer: buildOffer(),
-    location: buildLocation(),
+    offer: buildOffer(location),
+    location,
   };
 }
 
 function generateBookingOffers() {
   const offers = [];
 
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= OFFERS_COUNT; i++) {
     offers.push(buildBookingOffer());
   }
 
