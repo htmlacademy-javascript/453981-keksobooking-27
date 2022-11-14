@@ -19,12 +19,24 @@ const ROOM_NUMBER_CAPACITIES = {
   },
 };
 
+const HOUSING_TYPE_PRICES = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
+
 const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 const roomNumber = adForm.querySelector('#room_number');
 const capacity = adForm.querySelector('#capacity');
 const adFormHeader = adForm.querySelector('.ad-form-header');
 const adFormElements = adForm.querySelectorAll('.ad-form__element');
+const type = adForm.querySelector('#type');
+const price = adForm.querySelector('#price');
+const timeIn = adForm.querySelector('#timein');
+const timeOut = adForm.querySelector('#timeout');
 const mapFormFilters = mapFiltersForm.querySelectorAll('.map__filter');
 const mapFeatures = mapFiltersForm.querySelector('.map__features');
 
@@ -36,13 +48,26 @@ const validator = new Pristine(adForm, {
   errorTextClass: 'text-help',
 });
 
-function getCapacityErrorMessage() {
-  return `Для данного количества комнат (${roomNumber.value}) доступно размещение ${ROOM_NUMBER_CAPACITIES[roomNumber.value].text}`;
-}
-
 validator.addValidator(capacity,
   (value) => ROOM_NUMBER_CAPACITIES[roomNumber.value].values.includes(value),
-  getCapacityErrorMessage);
+  () => `Для данного количества комнат (${roomNumber.value}) доступно размещение ${ROOM_NUMBER_CAPACITIES[roomNumber.value].text}`);
+
+validator.addValidator(price,
+  (value) => Number(value) >= HOUSING_TYPE_PRICES[type.value],
+  () => `Минимальная цена для выбранного типа жилья \u2014 ${HOUSING_TYPE_PRICES[type.value]}`);
+
+type.addEventListener('change', (event) => {
+  price.placeholder = HOUSING_TYPE_PRICES[event.target.value];
+  price.min = HOUSING_TYPE_PRICES[event.target.value];
+});
+
+timeIn.addEventListener('change', (event) => {
+  timeOut.value = event.target.value;
+});
+
+timeOut.addEventListener('change', (event) => {
+  timeIn.value = event.target.value;
+});
 
 adForm.addEventListener('submit', (event) => {
   event.preventDefault();
