@@ -1,16 +1,5 @@
 import '../vendor/pristine/pristine.min.js';
 
-const adForm = document.querySelector('.ad-form');
-const mapFiltersForm = document.querySelector('.map__filters');
-const roomNumber = adForm.querySelector('#room_number');
-const capacity = adForm.querySelector('#capacity');
-const adFormHeader = adForm.querySelector('.ad-form-header');
-const adFormElements = adForm.querySelectorAll('.ad-form__element');
-const mapFormFilters = mapFiltersForm.querySelectorAll('.map__filter');
-const mapFeatures = mapFiltersForm.querySelector('.map__features');
-
-const validator = new Pristine(adForm);
-
 const ROOM_NUMBER_CAPACITIES = {
   1: {
     values: ['1'],
@@ -29,6 +18,23 @@ const ROOM_NUMBER_CAPACITIES = {
     text: 'не для гостей',
   },
 };
+
+const adForm = document.querySelector('.ad-form');
+const mapFiltersForm = document.querySelector('.map__filters');
+const roomNumber = adForm.querySelector('#room_number');
+const capacity = adForm.querySelector('#capacity');
+const adFormHeader = adForm.querySelector('.ad-form-header');
+const adFormElements = adForm.querySelectorAll('.ad-form__element');
+const mapFormFilters = mapFiltersForm.querySelectorAll('.map__filter');
+const mapFeatures = mapFiltersForm.querySelector('.map__features');
+
+const validator = new Pristine(adForm, {
+  classTo: 'ad-form__element',
+  errorClass: 'ad-form__element--invalid',
+  errorTextParent: 'ad-form__element',
+  errorTextTag: 'span',
+  errorTextClass: 'text-help',
+});
 
 function getCapacityErrorMessage() {
   return `Для данного количества комнат (${roomNumber.value}) доступно размещение ${ROOM_NUMBER_CAPACITIES[roomNumber.value].text}`;
