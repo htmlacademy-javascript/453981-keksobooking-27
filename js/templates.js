@@ -6,11 +6,12 @@ const OFFER_TYPE_TEXTS = {
   hotel: 'Отель',
 };
 
-const templateFragment = document.querySelector('#card').content;
-const template = templateFragment.querySelector('.popup');
+const template = document
+  .querySelector('#card')
+  .content
+  .querySelector('.popup');
 
 export function createCard(data) {
-  const fragment = document.createDocumentFragment();
   const element = template.cloneNode(true);
   const popupTitle = element.querySelector('.popup__title');
   const popupTextAddress = element.querySelector('.popup__text--address');
@@ -97,7 +98,5 @@ export function createCard(data) {
     popupAvatar.src = data.author.avatar;
   }
 
-  fragment.appendChild(element);
-
-  return fragment;
+  return element;
 }
