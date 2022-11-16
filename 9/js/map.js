@@ -8,6 +8,7 @@ const ZOOM = 12;
 const MAX_ZOOM = 30;
 const TILE_LAYER_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const TILE_LAYER_ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+const COORDINATES_PRECISION = 5;
 
 const address = document.querySelector('#address');
 const map = L.map('map-canvas');
@@ -44,7 +45,7 @@ address.value = `${TOKYO_LAT}, ${TOKYO_LNG}`;
 
 const onMarkerMove = (evt) => {
   const { lat, lng } = evt.target.getLatLng();
-  address.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  address.value = `${lat.toFixed(COORDINATES_PRECISION)}, ${lng.toFixed(COORDINATES_PRECISION)}`;
 };
 
 map.on('load', () => {
