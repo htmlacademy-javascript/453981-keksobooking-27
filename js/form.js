@@ -27,6 +27,9 @@ const HOUSING_TYPE_PRICES = {
   palace: 10000,
 };
 
+const MAX_SLIDER_VALUE = 100000;
+const SLIDER_STEP = 1000;
+
 const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 const roomNumber = adForm.querySelector('#room_number');
@@ -37,8 +40,23 @@ const type = adForm.querySelector('#type');
 const price = adForm.querySelector('#price');
 const timeIn = adForm.querySelector('#timein');
 const timeOut = adForm.querySelector('#timeout');
+const slider = adForm.querySelector('.ad-form__slider');
 const mapFormFilters = mapFiltersForm.querySelectorAll('.map__filter');
 const mapFeatures = mapFiltersForm.querySelector('.map__features');
+
+noUiSlider.create(slider, {
+  range: {
+    min: 0,
+    max: MAX_SLIDER_VALUE,
+  },
+  start: 0,
+  step: SLIDER_STEP,
+  connect: 'lower',
+  format: {
+    to: (value) => value.toFixed(0),
+    from: (value) => Number(value),
+  },
+});
 
 const validator = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -46,6 +64,10 @@ const validator = new Pristine(adForm, {
   errorTextParent: 'ad-form__element',
   errorTextTag: 'span',
   errorTextClass: 'text-help',
+});
+
+slider.noUiSlider.on('update', () => {
+  price.value = slider.noUiSlider.get();
 });
 
 validator.addValidator(capacity,
@@ -59,6 +81,10 @@ validator.addValidator(price,
 type.addEventListener('change', (event) => {
   price.placeholder = HOUSING_TYPE_PRICES[event.target.value];
   price.min = HOUSING_TYPE_PRICES[event.target.value];
+});
+
+price.addEventListener('change', (event) => {
+  slider.noUiSlider.set(event.target.value);
 });
 
 timeIn.addEventListener('change', (event) => {
