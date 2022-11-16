@@ -27,6 +27,9 @@ const HOUSING_TYPE_PRICES = {
   palace: 10000,
 };
 
+const MAX_SLIDER_VALUE = 100000;
+const SLIDER_STEP = 1000;
+
 const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 const roomNumber = adForm.querySelector('#room_number');
@@ -44,10 +47,10 @@ const mapFeatures = mapFiltersForm.querySelector('.map__features');
 noUiSlider.create(slider, {
   range: {
     min: 0,
-    max: 100000,
+    max: MAX_SLIDER_VALUE,
   },
   start: 0,
-  step: 1000,
+  step: SLIDER_STEP,
   connect: 'lower',
   format: {
     to: (value) => value.toFixed(0),
