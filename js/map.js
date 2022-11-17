@@ -1,6 +1,6 @@
-import { generateBookingOffers } from './data.js';
+import { getOffers } from './api.js';
 import { createCard } from './templates.js';
-import { setPageState } from './form.js';
+import { setPageState } from './utils.js';
 
 const TOKYO_LAT = 35.68950;
 const TOKYO_LNG = 139.69171;
@@ -12,6 +12,11 @@ const COORDINATES_PRECISION = 5;
 
 const address = document.querySelector('#address');
 const map = L.map('map-canvas');
+
+const requestErrorTemplate = document
+  .querySelector('#request-error')
+  .content
+  .querySelector('.error');
 
 L.tileLayer(TILE_LAYER_URL, {
   maxZoom: MAX_ZOOM,
@@ -41,7 +46,7 @@ const mainMarker = L.marker(
   },
 );
 
-address.value = `${TOKYO_LAT}, ${TOKYO_LNG}`;
+address.value = `${TOKYO_LAT.toFixed(COORDINATES_PRECISION)}, ${TOKYO_LNG.toFixed(COORDINATES_PRECISION)}`;
 
 const onMarkerMove = (evt) => {
   const { lat, lng } = evt.target.getLatLng();
@@ -50,20 +55,36 @@ const onMarkerMove = (evt) => {
 
 map.on('load', () => {
   setPageState(true);
-  generateBookingOffers().forEach((offer) => {
-    L.marker({
-      lat: offer.location.lat,
-      lng: offer.location.lng,
-    }, {
-      icon: pinIcon,
+  getOffers()
+    .then((data) => data.json())
+    .then((data) => {
+      data.forEach((offer) => {
+        L.marker({
+          lat: offer.location.lat,
+          lng: offer.location.lng,
+        }, {
+          icon: pinIcon,
+        })
+          .addTo(map)
+          .bindPopup(createCard(offer));
+      });
     })
-      .addTo(map)
-      .bindPopup(createCard(offer));
-  });
-}).setView({
-  lat: TOKYO_LAT,
-  lng: TOKYO_LNG,
-}, ZOOM);
+    .catch(() => {
+      const requestError = requestErrorTemplate.cloneNode(true);
+      const button = requestError.querySelector('.error__button');
+
+      document.body.appendChild(requestError);
+      button.addEventListener('click', () => {
+        requestError.remove();
+      });
+    });
+}).setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
+
+export function resetMapState() {
+  map.setView([TOKYO_LAT, TOKYO_LNG]);
+  map.closePopup();
+  mainMarker.setLatLng([TOKYO_LAT, TOKYO_LNG]);
+}
 
 mainMarker.addTo(map);
 mainMarker.on('move', onMarkerMove);
