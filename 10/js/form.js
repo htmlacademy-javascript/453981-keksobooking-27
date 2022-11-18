@@ -66,6 +66,14 @@ const validator = new Pristine(adForm, {
   errorTextClass: 'text-help',
 });
 
+function resetPageState() {
+  adForm.reset();
+  mapFiltersForm.reset();
+  validator.reset();
+  slider.noUiSlider.reset();
+  resetMapState();
+}
+
 slider.noUiSlider.on('update', () => {
   price.value = slider.noUiSlider.get();
 });
@@ -99,25 +107,16 @@ adForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   if (validator.validate()) {
-    createOffer(new FormData(adForm))
-      .then(() => {
-        adForm.reset();
-        mapFiltersForm.reset();
-        slider.noUiSlider.reset();
-        resetMapState();
-        showSuccessMessage();
-      })
-      .catch(() => {
-        showErrorMessage();
-      });
+    createOffer(new FormData(adForm), () => {
+      resetPageState();
+      showSuccessMessage();
+    }, () => {
+      showErrorMessage();
+    });
   }
 });
 
 resetButton.addEventListener('click', (event) => {
   event.preventDefault();
-  adForm.reset();
-  mapFiltersForm.reset();
-  validator.reset();
-  slider.noUiSlider.reset();
-  resetMapState();
+  resetPageState();
 });
