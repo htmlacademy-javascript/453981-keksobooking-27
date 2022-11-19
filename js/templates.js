@@ -6,13 +6,21 @@ const OFFER_TYPE_TEXTS = {
   hotel: 'Отель',
 };
 
-const template = document
+const popupTemplate = document
   .querySelector('#card')
   .content
   .querySelector('.popup');
+const successMessageTemplate = document
+  .querySelector('#success')
+  .content
+  .querySelector('.success');
+const errorMessageTemplate = document
+  .querySelector('#error')
+  .content
+  .querySelector('.error');
 
 export function createCard(data) {
-  const element = template.cloneNode(true);
+  const element = popupTemplate.cloneNode(true);
   const popupTitle = element.querySelector('.popup__title');
   const popupTextAddress = element.querySelector('.popup__text--address');
   const popupTextPrice = element.querySelector('.popup__text--price');
@@ -61,7 +69,7 @@ export function createCard(data) {
     popupTextTime.textContent = `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`;
   }
 
-  if (data.offer.features.length !== 0) {
+  if (data.offer.features && data.offer.features.length !== 0) {
     features.innerHTML = null;
 
     data.offer.features.forEach((feature) => {
@@ -80,7 +88,7 @@ export function createCard(data) {
     popupDescription.textContent = data.offer.description;
   }
 
-  if (data.offer.photos.length !== 0) {
+  if (data.offer.photos && data.offer.photos.length !== 0) {
     photos.innerHTML = null;
 
     data.offer.photos.forEach((item) => {
@@ -99,4 +107,41 @@ export function createCard(data) {
   }
 
   return element;
+}
+
+export function showSuccessMessage() {
+  const successMessage = successMessageTemplate.cloneNode(true);
+
+  function onSuccessMessageClose(event) {
+    if (event.type === 'click' || event.key === 'Escape') {
+      successMessage.removeEventListener('click', onSuccessMessageClose);
+      document.removeEventListener('keyup', onSuccessMessageClose);
+      successMessage.remove();
+    }
+  }
+
+  document.body.appendChild(successMessage);
+
+  successMessage.addEventListener('click', onSuccessMessageClose);
+  document.addEventListener('keyup', onSuccessMessageClose);
+}
+
+export function showErrorMessage() {
+  const errorMessage = errorMessageTemplate.cloneNode(true);
+  const button = errorMessage.querySelector('.error__button');
+
+  function onErrorMessageClose(event) {
+    if (event.type === 'click' || event.key === 'Escape') {
+      errorMessage.removeEventListener('click', onErrorMessageClose);
+      document.removeEventListener('keyup', onErrorMessageClose);
+      button.removeEventListener('click', onErrorMessageClose);
+      errorMessage.remove();
+    }
+  }
+
+  document.body.appendChild(errorMessage);
+
+  button.addEventListener('click', onErrorMessageClose);
+  errorMessage.addEventListener('click', onErrorMessageClose);
+  document.addEventListener('keyup', onErrorMessageClose);
 }

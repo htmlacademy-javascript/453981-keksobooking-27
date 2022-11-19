@@ -1,4 +1,7 @@
 import '../vendor/pristine/pristine.min.js';
+import { createOffer } from './api.js';
+import { resetMapState } from './map.js';
+import { showErrorMessage, showSuccessMessage } from './templates.js';
 
 const ROOM_NUMBER_CAPACITIES = {
   1: {
@@ -34,15 +37,12 @@ const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 const roomNumber = adForm.querySelector('#room_number');
 const capacity = adForm.querySelector('#capacity');
-const adFormHeader = adForm.querySelector('.ad-form-header');
-const adFormElements = adForm.querySelectorAll('.ad-form__element');
 const type = adForm.querySelector('#type');
 const price = adForm.querySelector('#price');
 const timeIn = adForm.querySelector('#timein');
 const timeOut = adForm.querySelector('#timeout');
 const slider = adForm.querySelector('.ad-form__slider');
-const mapFormFilters = mapFiltersForm.querySelectorAll('.map__filter');
-const mapFeatures = mapFiltersForm.querySelector('.map__features');
+const resetButton = adForm.querySelector('.ad-form__reset');
 
 noUiSlider.create(slider, {
   range: {
@@ -65,6 +65,14 @@ const validator = new Pristine(adForm, {
   errorTextTag: 'span',
   errorTextClass: 'text-help',
 });
+
+function resetPageState() {
+  adForm.reset();
+  mapFiltersForm.reset();
+  validator.reset();
+  slider.noUiSlider.reset();
+  resetMapState();
+}
 
 slider.noUiSlider.on('update', () => {
   price.value = slider.noUiSlider.get();
@@ -99,24 +107,16 @@ adForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   if (validator.validate()) {
-    adForm.submit();
+    createOffer(new FormData(adForm), () => {
+      resetPageState();
+      showSuccessMessage();
+    }, () => {
+      showErrorMessage();
+    });
   }
 });
 
-export function setPageState(active) {
-  adForm.classList.toggle('ad-form--disabled', !active);
-
-  adFormHeader.disabled = !active;
-
-  adFormElements.forEach((formElement) => {
-    formElement.disabled = !active;
-  });
-
-  mapFiltersForm.classList.toggle('map__filters--disabled', !active);
-
-  mapFormFilters.forEach((mapFormFilter) => {
-    mapFormFilter.disabled = !active;
-  });
-
-  mapFeatures.disabled = !active;
-}
+resetButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  resetPageState();
+});
