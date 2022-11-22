@@ -1,5 +1,7 @@
 const ALLOWED_FILE_TYPES = ['png', 'jpg', 'jpeg', 'gif'];
 const DEFAULT_AVATAR_URL = 'img/muffin-grey.svg';
+const IMAGE_WIDTH = 70;
+const IMAGE_HEIGHT = 70;
 
 const avatar = document.querySelector('#avatar');
 const avatarPreview = document.querySelector('.ad-form-header__preview img');
@@ -21,8 +23,8 @@ photo.addEventListener('change', () => {
     photoPreview.innerHTML = '';
     const image = document.createElement('img');
     image.src = URL.createObjectURL(file);
-    image.width = 70;
-    image.height = 70;
+    image.width = IMAGE_WIDTH;
+    image.height = IMAGE_HEIGHT;
     photoPreview.append(image);
   }
 });
