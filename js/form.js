@@ -1,6 +1,7 @@
 import '../vendor/pristine/pristine.min.js';
 import { createOffer } from './api.js';
 import { resetMapState } from './map.js';
+import { resetPreviews } from './upload.js';
 import { showErrorMessage, showSuccessMessage } from './templates.js';
 
 const ROOM_NUMBER_CAPACITIES = {
@@ -68,6 +69,7 @@ const validator = new Pristine(adForm, {
 
 function resetPageState() {
   adForm.reset();
+  resetPreviews();
   mapFiltersForm.reset();
   validator.reset();
   slider.noUiSlider.reset();
