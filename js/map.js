@@ -9,6 +9,9 @@ const MAX_ZOOM = 30;
 const TILE_LAYER_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const TILE_LAYER_ATTRIBUTION = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 const COORDINATES_PRECISION = 5;
+const LOW_HOUSING_PRICE = 10000;
+const HIGH_HOUSING_PRICE = 50000;
+const MAX_DISPLAYED_OFFERS = 10;
 
 const mapFiltersForm = document.querySelector('.map__filters');
 const housingType = mapFiltersForm.querySelector('#housing-type');
@@ -83,19 +86,16 @@ function checkHousingType(type, offer) {
 }
 
 function checkPrice(price, offer) {
-  if (price === 'any') {
-    return true;
+  switch (price) {
+    case 'any':
+      return true;
+    case 'low':
+      return offer.price < LOW_HOUSING_PRICE;
+    case 'high':
+      return offer.price > HIGH_HOUSING_PRICE;
+    default:
+      return HIGH_HOUSING_PRICE >= offer.price && offer.price >= LOW_HOUSING_PRICE;
   }
-
-  if (price === 'low') {
-    return offer.price < 10000;
-  }
-
-  if (price === 'high') {
-    return offer.price > 50000;
-  }
-
-  return 50000 >= offer.price && offer.price >= 10000;
 }
 
 function checkGuests(guestsCount, offer) {
@@ -130,7 +130,7 @@ function updateMap() {
         checkGuests(housingGuests.value, offer) &&
         checkRooms(housingRooms.value, offer) &&
         checkFeatures(offer))
-      .slice(0, 10)
+      .slice(0, MAX_DISPLAYED_OFFERS)
       .forEach(renderOffer);
   }, () => {
     const requestError = requestErrorTemplate.cloneNode(true);
