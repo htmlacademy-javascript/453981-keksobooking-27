@@ -19,7 +19,7 @@ const errorMessageTemplate = document
   .content
   .querySelector('.error');
 
-export function createCard(data) {
+export const createCard = (data) => {
   const element = popupTemplate.cloneNode(true);
   const popupTitle = element.querySelector('.popup__title');
   const popupTextAddress = element.querySelector('.popup__text--address');
@@ -107,7 +107,7 @@ export function createCard(data) {
   }
 
   return element;
-}
+};
 
 export function showSuccessMessage() {
   const successMessage = successMessageTemplate.cloneNode(true);
@@ -126,7 +126,7 @@ export function showSuccessMessage() {
   document.addEventListener('keyup', onSuccessMessageClose);
 }
 
-export function showErrorMessage() {
+export const showErrorMessage = () => {
   const errorMessage = errorMessageTemplate.cloneNode(true);
   const button = errorMessage.querySelector('.error__button');
 
@@ -144,4 +144,4 @@ export function showErrorMessage() {
   button.addEventListener('click', onErrorMessageClose);
   errorMessage.addEventListener('click', onErrorMessageClose);
   document.addEventListener('keyup', onErrorMessageClose);
-}
+};

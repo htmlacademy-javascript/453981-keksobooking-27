@@ -1,14 +1,18 @@
-export function getOffers(onSuccess, onError) {
-  return fetch('https://27.javascript.pages.academy/keksobooking/data')
-    .then(onSuccess)
-    .catch(onError);
-}
+export const getOffers = (onSuccess, onError) => fetch('https://27.javascript.pages.academy/keksobooking/data')
+  .then(onSuccess)
+  .catch(onError);
 
-export function createOffer(offerData, onSuccess, onError) {
-  return fetch('https://27.javascript.pages.academy/keksobooking', {
-    method: 'post',
-    body: offerData,
+export const createOffer = (offerData, onSuccess, onError) => fetch('https://27.javascript.pages.academy/keksobooking', {
+  method: 'post',
+  body: offerData,
+})
+  .then((response) => {
+    if (response.ok) {
+      onSuccess();
+
+      return;
+    }
+
+    onError();
   })
-    .then(onSuccess)
-    .catch(onError);
-}
+  .catch(onError);

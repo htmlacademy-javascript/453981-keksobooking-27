@@ -67,14 +67,14 @@ const validator = new Pristine(adForm, {
   errorTextClass: 'text-help',
 });
 
-function resetPageState() {
+const resetPageState = () => {
   adForm.reset();
   resetPreviews();
   mapFiltersForm.reset();
   validator.reset();
   slider.noUiSlider.reset();
   resetMapState();
-}
+};
 
 slider.noUiSlider.on('update', () => {
   price.value = slider.noUiSlider.get();

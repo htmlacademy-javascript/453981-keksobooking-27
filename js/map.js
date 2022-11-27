@@ -12,6 +12,10 @@ const COORDINATES_PRECISION = 5;
 const LOW_HOUSING_PRICE = 10000;
 const HIGH_HOUSING_PRICE = 50000;
 const MAX_DISPLAYED_OFFERS = 10;
+const MAIN_ICON_SIZE = [52, 52];
+const ICON_SIZE = [40, 40];
+const MAIN_ICON_ANCHOR = [26, 52];
+const ICON_ANCHOR = [20, 40];
 
 const mapFiltersForm = document.querySelector('.map__filters');
 const housingType = mapFiltersForm.querySelector('#housing-type');
@@ -22,6 +26,8 @@ const housingFeatures = mapFiltersForm.querySelector('#housing-features');
 const address = document.querySelector('#address');
 
 let selectedFeatures = [];
+
+setPageState(false);
 
 const map = L.map('map-canvas');
 const markers = L.layerGroup().addTo(map);
@@ -38,14 +44,14 @@ L.tileLayer(TILE_LAYER_URL, {
 
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
+  iconSize: MAIN_ICON_SIZE,
+  iconAnchor: MAIN_ICON_ANCHOR,
 });
 
 const pinIcon = L.icon({
   iconUrl: './img/pin.svg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: ICON_SIZE,
+  iconAnchor: ICON_ANCHOR,
 });
 
 const mainMarker = L.marker(
@@ -61,12 +67,12 @@ const mainMarker = L.marker(
 
 address.value = `${TOKYO_LAT.toFixed(COORDINATES_PRECISION)}, ${TOKYO_LNG.toFixed(COORDINATES_PRECISION)}`;
 
-function onMarkerMove(event) {
+const onMarkerMove = (event) => {
   const { lat, lng } = event.target.getLatLng();
   address.value = `${lat.toFixed(COORDINATES_PRECISION)}, ${lng.toFixed(COORDINATES_PRECISION)}`;
-}
+};
 
-function renderOffer(offer) {
+const renderOffer = (offer) => {
   L.marker({
     lat: offer.location.lat,
     lng: offer.location.lng,
@@ -75,17 +81,17 @@ function renderOffer(offer) {
   })
     .addTo(markers)
     .bindPopup(createCard(offer));
-}
+};
 
-function checkHousingType(type, offer) {
+const checkHousingType = (type, offer) => {
   if (type === 'any') {
     return true;
   }
 
   return offer.type === type;
-}
+};
 
-function checkPrice(price, offer) {
+const checkPrice = (price, offer) => {
   switch (price) {
     case 'any':
       return true;
@@ -96,29 +102,31 @@ function checkPrice(price, offer) {
     default:
       return HIGH_HOUSING_PRICE >= offer.price && offer.price >= LOW_HOUSING_PRICE;
   }
-}
+};
 
-function checkGuests(guestsCount, offer) {
+const checkGuests = (guestsCount, offer) => {
   if (guestsCount === 'any') {
     return true;
   }
 
   return offer.guests === Number(guestsCount);
-}
+};
 
-function checkRooms(rooms, offer) {
+const checkRooms = (rooms, offer) => {
   if (rooms === 'any') {
     return true;
   }
 
   return offer.rooms === Number(rooms);
-}
+};
 
-function checkFeatures(offer) {
-  return selectedFeatures.every((feature) => offer.features?.includes(feature) ?? false);
-}
+const checkFeatures = (offer) => selectedFeatures.every((feature) => offer.features?.includes(feature) ?? false);
 
-function updateMap() {
+const resetMarkers = () => {
+  markers.clearLayers();
+};
+
+const updateMap = () => {
   resetMarkers();
 
   getOffers(async (data) => {
@@ -140,8 +148,10 @@ function updateMap() {
     button.addEventListener('click', () => {
       requestError.remove();
     });
+
+    setPageState(false);
   });
-}
+};
 
 mapFiltersForm.addEventListener('change', debounce(() => {
   updateMap();
@@ -158,16 +168,12 @@ map.on('load', () => {
   updateMap();
 }).setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
 
-export function resetMapState() {
+export const resetMapState = () => {
   updateMap();
   map.setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
   map.closePopup();
   mainMarker.setLatLng([TOKYO_LAT, TOKYO_LNG]);
-}
-
-function resetMarkers() {
-  markers.clearLayers();
-}
+};
 
 mainMarker.addTo(map);
 mainMarker.on('move', onMarkerMove);

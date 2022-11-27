@@ -8,6 +8,8 @@ const avatarPreview = document.querySelector('.ad-form-header__preview img');
 const photo = document.querySelector('#images');
 const photoPreview = document.querySelector('.ad-form__photo');
 
+const checkFileType = (file) => ALLOWED_FILE_TYPES.some((type) => file.endsWith(type));
+
 avatar.addEventListener('change', () => {
   const userAvatar = avatar.files[0];
 
@@ -29,11 +31,7 @@ photo.addEventListener('change', () => {
   }
 });
 
-function checkFileType(file) {
-  return ALLOWED_FILE_TYPES.some((type) => file.endsWith(type));
-}
-
-export function resetPreviews() {
+export const resetPreviews = () => {
   avatarPreview.src = DEFAULT_AVATAR_URL;
   photoPreview.innerHTML = '';
-}
+};
