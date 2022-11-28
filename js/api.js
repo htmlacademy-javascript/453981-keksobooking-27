@@ -1,4 +1,4 @@
-export const getOffers = (onSuccess, onError) => fetch('https://27.javacript.pages.academy/keksobooking/data')
+export const getOffers = (onSuccess, onError) => fetch('https://27.javascript.pages.academy/keksobooking/data')
   .then(onSuccess)
   .catch(onError);
 
