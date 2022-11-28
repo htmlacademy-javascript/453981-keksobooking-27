@@ -5,7 +5,7 @@ const adFormElements = adForm.querySelectorAll('.ad-form__element');
 const mapFormFilters = mapFiltersForm.querySelectorAll('.map__filter');
 const mapFeatures = mapFiltersForm.querySelector('.map__features');
 
-export const setPageState = (active) => {
+export const setAdFormState = (active) => {
   adForm.classList.toggle('ad-form--disabled', !active);
 
   adFormHeader.disabled = !active;
@@ -13,7 +13,9 @@ export const setPageState = (active) => {
   adFormElements.forEach((formElement) => {
     formElement.disabled = !active;
   });
+};
 
+export const setMapFiltersState = (active) => {
   mapFiltersForm.classList.toggle('map__filters--disabled', !active);
 
   mapFormFilters.forEach((mapFormFilter) => {

@@ -1,6 +1,6 @@
 import { getOffers } from './api.js';
 import { createCard } from './templates.js';
-import { setPageState, debounce } from './utils.js';
+import { setAdFormState, setMapFiltersState, debounce } from './utils.js';
 
 const TOKYO_LAT = 35.68950;
 const TOKYO_LNG = 139.69171;
@@ -27,7 +27,8 @@ const address = document.querySelector('#address');
 
 let selectedFeatures = [];
 
-setPageState(false);
+setAdFormState(false);
+setMapFiltersState(false);
 
 const map = L.map('map-canvas');
 const markers = L.layerGroup().addTo(map);
@@ -149,7 +150,7 @@ const updateMap = () => {
       requestError.remove();
     });
 
-    setPageState(false);
+    setMapFiltersState(false);
   });
 };
 
@@ -164,7 +165,8 @@ housingFeatures.addEventListener('change', () => {
 });
 
 map.on('load', () => {
-  setPageState(true);
+  setAdFormState(true);
+  setMapFiltersState(true);
   updateMap();
 }).setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
 
