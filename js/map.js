@@ -26,6 +26,7 @@ const housingFeatures = mapFiltersForm.querySelector('#housing-features');
 const address = document.querySelector('#address');
 
 let selectedFeatures = [];
+let offersFetchedSuccessfully = null;
 
 setAdFormState(false);
 setMapFiltersState(false);
@@ -141,6 +142,8 @@ const updateMap = () => {
         checkFeatures(offer))
       .slice(0, MAX_DISPLAYED_OFFERS)
       .forEach(renderOffer);
+
+    offersFetchedSuccessfully = true;
   }, () => {
     const requestError = requestErrorTemplate.cloneNode(true);
     const button = requestError.querySelector('.error__button');
@@ -151,6 +154,7 @@ const updateMap = () => {
     });
 
     setMapFiltersState(false);
+    offersFetchedSuccessfully = false;
   });
 };
 
@@ -171,7 +175,10 @@ map.on('load', () => {
 }).setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
 
 export const resetMapState = () => {
-  resetMarkers();
+  if (offersFetchedSuccessfully) {
+    updateMap();
+  }
+
   map.setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
   map.closePopup();
   mainMarker.setLatLng([TOKYO_LAT, TOKYO_LNG]);
