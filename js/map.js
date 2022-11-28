@@ -171,7 +171,7 @@ map.on('load', () => {
 }).setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
 
 export const resetMapState = () => {
-  updateMap();
+  resetMarkers();
   map.setView([TOKYO_LAT, TOKYO_LNG], ZOOM);
   map.closePopup();
   mainMarker.setLatLng([TOKYO_LAT, TOKYO_LNG]);
