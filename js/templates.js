@@ -109,35 +109,35 @@ export const createCard = (data) => {
   return element;
 };
 
-export function showSuccessMessage() {
+export const showSuccessMessage = () => {
   const successMessage = successMessageTemplate.cloneNode(true);
 
-  function onSuccessMessageClose(event) {
+  const onSuccessMessageClose = (event) => {
     if (event.type === 'click' || event.key === 'Escape') {
       successMessage.removeEventListener('click', onSuccessMessageClose);
       document.removeEventListener('keyup', onSuccessMessageClose);
       successMessage.remove();
     }
-  }
+  };
 
   document.body.appendChild(successMessage);
 
   successMessage.addEventListener('click', onSuccessMessageClose);
   document.addEventListener('keyup', onSuccessMessageClose);
-}
+};
 
 export const showErrorMessage = () => {
   const errorMessage = errorMessageTemplate.cloneNode(true);
   const button = errorMessage.querySelector('.error__button');
 
-  function onErrorMessageClose(event) {
+  const onErrorMessageClose = (event) => {
     if (event.type === 'click' || event.key === 'Escape') {
       errorMessage.removeEventListener('click', onErrorMessageClose);
       document.removeEventListener('keyup', onErrorMessageClose);
       button.removeEventListener('click', onErrorMessageClose);
       errorMessage.remove();
     }
-  }
+  };
 
   document.body.appendChild(errorMessage);
 
